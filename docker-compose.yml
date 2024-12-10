@@ -1,0 +1,46 @@
+services:
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    restart: always
+
+  backend:
+    build:
+      context: capy-back
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      MONGO_URI: mongodb://root:example@mongodb:27017/?authSource=admin
+    depends_on:
+      - mongodb
+    volumes:
+      - ./capy-back:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+  frontend:
+    build:
+      context: capy-front
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./capy-front:/app
+      - /app/node_modules
+    command: npm start
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
