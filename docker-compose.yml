@@ -26,14 +26,15 @@ services:
     environment:
       PORT: 3001
       MONGO_URI: mongodb://root:example@mongodb:27017/?authSource=admin
+    volumes:
+      - ./capy-back:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
     depends_on:
       - mongodb
-    volumes:
-      - ./capy-back:/app
-      - /app/node_modules
     networks:
         - app_network
-    command: npm run start:dev
+
 
   frontend:
     build:
