@@ -1,3 +1,6 @@
+networks:
+  app_network:
+
 services:
   mongodb:
     image: mongo:6
@@ -9,6 +12,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - app_network
     restart: always
 
   backend:
@@ -26,6 +31,8 @@ services:
     volumes:
       - ./capy-back:/app
       - /app/node_modules
+    networks:
+        - app_network
     command: npm run start:dev
 
   frontend:
@@ -41,6 +48,8 @@ services:
     command: npm start
     depends_on:
       - backend
+    networks:
+      - app_network
 
   mongo-express:
     image: mongo-express:latest
@@ -51,10 +60,13 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: password
     depends_on:
       - mongodb
+    networks:
+      - app_network
 
 volumes:
   mongo-data:
