@@ -1,6 +1,6 @@
 [submodule "capy-back"]
 	path = capy-back
 	url = git@github.com:Capyclub/capy-back.git
-[submodule "capy-front"]
+[submodule "capy-next-front"]
 	path = capy-next-front
 	url = git@github.com:Capyclub/capy-next-front.git
