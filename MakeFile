@@ -1,0 +1,74 @@
+# import .env file
+include .env
+export $(shell sed 's/=.*//' .env)
+
+
+# URL des dépôts Git
+FRONTEND_REPO=git@github.com:Capyclub/capy-next-front.git
+BACKEND_REPO=git@github.com:Capyclub/capy-back.git
+
+# Détection de la commande docker-compose
+DOCKER_COMPOSE = $(shell if docker compose version > /dev/null 2>&1; then echo "docker compose"; else echo "docker-compose"; fi)
+
+init:
+	@if [ ! -d "./capy-next-front" ]; then \
+		echo "Cloning capy-next-front repository..."; \
+		git clone -b main $(FRONTEND_REPO); \
+	else \
+		echo "capy-next-front repository already exists."; \
+	fi
+	@if [ -f "./capy-next-front/.env.example" ]; then \
+		echo "Copying .env.example to .env in capy-next-front..."; \
+		cp ./capy-next-front/.env.example ./capy-next-front/.env; \
+	fi
+	@if [ -d "./capy-next-front" ]; then \
+		echo "Installing capy-next-front dependencies..."; \
+		cd capy-next-front  && npm install; \
+	fi
+	@if [ ! -d "./capy-back" ]; then \
+		echo "Cloning capy-back repository..."; \
+		git clone -b main $(capy-back_REPO); \
+	else \
+		echo "capy-back repository already exists."; \
+	fi
+	@if [ -f "./capy-back/.env.example" ]; then \
+		echo "Copying .env.example to .env in capy-back..."; \
+		cp ./capy-back/.env.example ./capy-back/.env; \
+	fi
+	@if [ -d "./capy-back" ]; then \
+		echo "Installing capy-back dependencies..."; \
+		cd capy-back  && npm install; \
+	fi
+
+update:
+	@echo "Updating current directory repository..."
+	@git checkout main && git pull
+
+	@if [ -d "./capy-next-front" ]; then \
+		echo "Updating capy-next-front repository..."; \
+		cd capy-next-front && git checkout develop  && git pull; \
+	fi
+	@if [ -d "./capy-next-front" ]; then \
+		echo "Installing capy-next-front dependencies..."; \
+		cd capy-next-front && npm install; \
+	fi
+	@if [ -d "./capy-back" ]; then \
+		echo "Updating capy-back repository..."; \
+		cd capy-back && git checkout main  && git pull; \
+	fi
+	@if [ -d "./capy-back" ]; then \
+		echo "Installing capy-back dependencies..."; \
+		cd capy-back && npm install; \
+	fi
+
+
+start:
+	$(DOCKER_COMPOSE)  up -d
+
+stop:
+	$(DOCKER_COMPOSE)  down
+
+restart: stop start
+
+logs:
+	$(DOCKER_COMPOSE)  logs -f
