@@ -2,5 +2,5 @@
 	path = capy-back
 	url = git@github.com:Capyclub/capy-back.git
 [submodule "capy-front"]
-	path = capy-front
-	url = git@github.com:Capyclub/capy-front.git
+	path = capy-next-front
+	url = git@github.com:Capyclub/capy-next-front.git
