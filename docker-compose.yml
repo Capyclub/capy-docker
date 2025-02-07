@@ -38,15 +38,13 @@ services:
 
   frontend:
     build:
-      context: ./capy-front
+      context: ./capy-next-front
       dockerfile: Dockerfile
     container_name: frontend
     ports:
       - "3000:3000"
-    volumes:
-      - ./capy-front:/app
-      - /app/node_modules
-    command: npm start
+    environment:
+      - NODE_ENV=production
     depends_on:
       - backend
     networks:
